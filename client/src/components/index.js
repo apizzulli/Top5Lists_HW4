@@ -8,6 +8,7 @@ import SplashScreen from './SplashScreen'
 import Statusbar from './Statusbar'
 import Top5Item from './Top5Item'
 import WorkspaceScreen from './WorkspaceScreen'
+import SignInSide from './SignInSide'
 /*
     This serves as a module so that we can import
     all the other components as we wish.
@@ -21,6 +22,7 @@ export {
     HomeWrapper,
     ListCard, 
     RegisterScreen,
+    SignInSide,
     SplashScreen,
     Statusbar, 
     Top5Item, 

@@ -1,5 +1,6 @@
 import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom'
+//import Link from '@mui/material/Link';
 import AuthContext from '../auth';
 import { GlobalStoreContext } from '../store'
 import EditToolbar from './EditToolbar'
@@ -21,7 +22,7 @@ export default function AppBanner() {
     const handleProfileMenuOpen = (event) => {
         setAnchorEl(event.currentTarget);
     };
-
+ 
     const handleMenuClose = () => {
         setAnchorEl(null);
     };
@@ -48,8 +49,8 @@ export default function AppBanner() {
             open={isMenuOpen}
             onClose={handleMenuClose}
         >
+            <MenuItem onClick = {handleMenuClose}><Link to ='/login/'>Login</Link></MenuItem>
             <MenuItem onClick={handleMenuClose}><Link to='/register/'>Create New Account</Link></MenuItem>
-            <MenuItem ><Link to ='/login/'>Login</Link></MenuItem>
         </Menu>
     );
     const loggedInMenu = 

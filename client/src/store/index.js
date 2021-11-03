@@ -345,7 +345,9 @@ function GlobalStoreContextProvider(props) {
             });
         }
     }
-
+    store.showErrorModal = function(){
+        document.getElementById("error-modal").classList.add("is-visible");
+    }
     store.undo = function () {
         tps.undoTransaction();
     }

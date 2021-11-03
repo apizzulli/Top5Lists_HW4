@@ -1,5 +1,7 @@
-import * as React from 'react';
 import { useContext } from 'react';
+import AuthContext from '../auth'
+import { GlobalStoreContext } from '../store'
+import Container from '@mui/material/Container';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -13,7 +15,6 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { GlobalStoreContext } from '../store'
 
 
 function Copyright(props) {
@@ -21,7 +22,7 @@ function Copyright(props) {
     <Typography variant="body2" color="text.secondary" align="center" {...props}>
       {'Copyright © '}
       <Link color="inherit" href="https://mui.com/">
-        Your Website
+        The Top 5 Lister
       </Link>{' '}
       {new Date().getFullYear()}
       {'.'}
@@ -34,10 +35,14 @@ const theme = createTheme();
 export default function SignInSide() {
   const { auth } = useContext(AuthContext);
   const { store } = useContext(GlobalStoreContext)
+  
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    // eslint-disable-next-line no-console
+    auth.loginUser({
+      email: data.get('email'),
+      password: data.get('password'),
+    })
     console.log({
       email: data.get('email'),
       password: data.get('password'),
@@ -45,9 +50,9 @@ export default function SignInSide() {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container component="main" maxWidth="fullx" >
       <ThemeProvider theme={theme}>
-        <Grid container component="main" sx={{ height: '100vh' }}>
+        <Grid container component="main" sx={{ height: '80vh' }}>
           <CssBaseline />
           <Grid
             item
@@ -81,7 +86,7 @@ export default function SignInSide() {
               </Typography>
               <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
                 <TextField
-                  margin="normal"
+                 // margin="normal"
                   required
                   fullWidth
                   id="email"
@@ -91,7 +96,7 @@ export default function SignInSide() {
                   autoFocus
                 />
                 <TextField
-                  margin="normal"
+                 // margin="normal"
                   required
                   fullWidth
                   name="password"
@@ -108,6 +113,7 @@ export default function SignInSide() {
                   type="submit"
                   fullWidth
                   variant="contained"
+                  onSubmit={console.log("logged in")}
                   sx={{ mt: 3, mb: 2 }}
                 >
                   Sign In

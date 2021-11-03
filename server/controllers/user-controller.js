@@ -15,7 +15,11 @@ getLoggedIn = async (req, res) => {
         }).send();
     })
 }
-
+login = async(req,res)=>{
+    const { email, password } = req.body;
+    const existingUser = await User.findOne({ email: email });
+    
+}
 registerUser = async (req, res) => {
     try {
         const { firstName, lastName, email, password, passwordVerify } = req.body;
