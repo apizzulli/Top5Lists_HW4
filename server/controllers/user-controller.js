@@ -5,20 +5,40 @@ const bcrypt = require('bcryptjs')
 getLoggedIn = async (req, res) => {
     auth.verify(req, res, async function () {
         const loggedInUser = await User.findOne({ _id: req.userId });
-        return res.status(200).json({
-            loggedIn: true,
-            user: {
-                firstName: loggedInUser.firstName,
-                lastName: loggedInUser.lastName,
-                email: loggedInUser.email
-            }
-        }).send();
+        if(loggedInUser){
+            return res.status(200).json({
+                loggedIn: true,
+                user: {
+                    firstName: loggedInUser.firstName,
+                    lastName: loggedInUser.lastName,
+                    email: loggedInUser.email
+                }
+            }).send();
+        }
+        else
+            console.log("user not found"); 
     })
 }
-login = async(req,res)=>{
-    const { email, password } = req.body;
-    const existingUser = await User.findOne({ email: email });
-    
+loginUser = async(req,res)=>{
+    console.log("loginUser in user-controller.js");
+    console.log("req body: "+req.body);
+    try {
+        const {email,password} = req.body;
+        console.log("email: "+email);
+        console.log("password: "+password);
+        if(!email ||!password){
+            return res
+            .status(400)
+            .json({errorMessage: "Please enter all required fields."});
+        }
+        const existingUser = User.findOne({email: email});
+        if(!existingUser)
+            console.log("No such user exists.")
+        else
+            console.log(existingUser.email);
+    }catch(err){
+        console.log(err);
+    }
 }
 registerUser = async (req, res) => {
     try {
@@ -84,5 +104,6 @@ registerUser = async (req, res) => {
 
 module.exports = {
     getLoggedIn,
-    registerUser
+    registerUser,
+    loginUser
 }

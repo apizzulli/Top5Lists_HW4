@@ -1,3 +1,4 @@
+import * as React from 'react';
 import { useContext } from 'react';
 import AuthContext from '../auth'
 import { GlobalStoreContext } from '../store'
@@ -38,15 +39,12 @@ export default function SignInSide() {
   
   const handleSubmit = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
+    const formData = new FormData(event.currentTarget);
+    console.log(formData);
     auth.loginUser({
-      email: data.get('email'),
-      password: data.get('password'),
-    })
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+      email: formData.get('email'),
+      password: formData.get('password')  
+    }, store);
   };
 
   return (
@@ -60,6 +58,8 @@ export default function SignInSide() {
             sm={4}
             md={7}
             sx={{
+              paddingLeft: '0px',
+              paddingRight: '0px',
               backgroundImage: 'url(https://source.unsplash.com/random)',
               backgroundRepeat: 'no-repeat',
               backgroundColor: (t) =>
@@ -113,7 +113,6 @@ export default function SignInSide() {
                   type="submit"
                   fullWidth
                   variant="contained"
-                  onSubmit={console.log("logged in")}
                   sx={{ mt: 3, mb: 2 }}
                 >
                   Sign In

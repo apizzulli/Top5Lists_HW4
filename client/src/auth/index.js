@@ -7,7 +7,7 @@ console.log("create AuthContext: " + AuthContext);
 
 // THESE ARE ALL THE TYPES OF UPDATES TO OUR AUTH STATE THAT CAN BE PROCESSED
 export const AuthActionType = {
-    LOGIN: "LOGIN_USER",
+    LOGIN_USER: "LOGIN_USER",
     GET_LOGGED_IN: "GET_LOGGED_IN",
     REGISTER_USER: "REGISTER_USER"
 }
@@ -61,7 +61,6 @@ function AuthContextProvider(props) {
             });
         }
     }
-
     auth.registerUser = async function(userData, store) {
         const response = await api.registerUser(userData);      
         if (response.status === 200) {
@@ -76,7 +75,8 @@ function AuthContextProvider(props) {
         }
     }
     auth.loginUser = async function(userData, store){
-        const response = await api.login(userData);
+        const response = await api.loginUser(userData);
+        console.log("made it back to client");
         if(response.status==200){
             authReducer({
                 type: AuthActionType.LOGIN_USER,
