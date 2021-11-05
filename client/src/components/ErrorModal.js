@@ -27,7 +27,6 @@ export default function ErrorModal() {
   if(auth.errorToDisplay){
     show = true;
     error = auth.errorToDisplay;
-    console.log("error: "+auth.errorToDisplay);
   }else{
     show=false;
   }

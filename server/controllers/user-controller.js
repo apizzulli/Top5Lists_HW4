@@ -3,7 +3,6 @@ const User = require('../models/user-model')
 const bcrypt = require('bcryptjs')
 
 getLoggedIn = async (req, res) => {
-    console.log("getLoggedIn");
     auth.verify(req, res, async function () {
         const loggedInUser = await User.findOne({ _id: req.userId });
         return res.status(200).json({
@@ -47,7 +46,6 @@ loginUser = async(req,res)=>{
             }
         });
     }catch(err){
-        console.log("error: "+err);
     }
 }
 logoutUser=async(req,res)=>{
