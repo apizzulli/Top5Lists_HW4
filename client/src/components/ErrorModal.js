@@ -20,34 +20,35 @@ const style = {
 
 export default function ErrorModal() {
   let error;
+  let show=false;
+
   const { auth } = useContext(AuthContext);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
   if(auth.errorToDisplay){
+    show = true;
     error = auth.errorToDisplay;
     console.log("error: "+auth.errorToDisplay);
   }
   return (
-    <div>
-      <Modal 
-      display={true}
-        open={open}
-        onClose={handleClose}
-        id={"error-modal"}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style} >
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-            {error}
-          </Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            {error}
-          </Typography>
-        </Box>
-      </Modal>
-    </div>
-  );
+     <div >
+       <Modal
+         open={show}
+         onBlur={handleClose}
+         id={"error-modal"}
+         aria-labelledby="modal-modal-title"
+         aria-describedby="modal-modal-description"
+       >
+         <Box sx={style} >
+           <Typography id="modal-modal-title" variant="h6" component="h2">
+             Error
+           </Typography>
+           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+             {error}
+           </Typography>
+         </Box>
+       </Modal>
+     </div>
+   );
 }
