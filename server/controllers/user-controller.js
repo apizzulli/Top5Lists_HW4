@@ -17,7 +17,6 @@ getLoggedIn = async (req, res) => {
 }
 loginUser = async(req,res)=>{ 
     try{
-        console.log("hi from server");
         const{ email, password }=req.body;
         //See if there exists a user in the database with the given email. 
         const existingUser = await User.findOne({email:email}); 
@@ -27,7 +26,6 @@ loginUser = async(req,res)=>{
         if(passwordHash!=existingUser.passwordHash){
         }
         const token = auth.signToken(existingUser);
-        console.log("logged in");
         await res.cookie("token", token, {
             httpOnly: true,
             secure: true,

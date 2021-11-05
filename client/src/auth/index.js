@@ -29,7 +29,7 @@ function AuthContextProvider(props) {
             case AuthActionType.LOGIN_USER:{
                 return setAuth({
                     user: payload.user,
-                    logginIn: true
+                    loggedIn: true
                 })
             }
             case AuthActionType.GET_LOGGED_IN: {
@@ -77,6 +77,7 @@ function AuthContextProvider(props) {
     auth.loginUser = async function(userData, store){
         const response = await api.loginUser(userData);
         if(response.status==200){
+            console.log("succeeded in calling api.loginUser");
             authReducer({
                 type: AuthActionType.LOGIN_USER,
                 payload: {
@@ -84,7 +85,6 @@ function AuthContextProvider(props) {
                 }
             })
             history.push("/");
-
             store.loadIdNamePairs();
         }
     }
