@@ -108,12 +108,12 @@ function AuthContextProvider(props) {
     }
     auth.loginUser = async function(userData, store){
         try{
-            const response = await api.loginUser(userData);
-            if(response.status==200){
+            const res = await api.loginUser(userData);
+            if(res.status==200){
                 authReducer({
                     type: AuthActionType.LOGIN_USER,
                     payload: {
-                        user: response.data.user
+                        user: res.data.user
                     }
                 })
                 history.push("/");

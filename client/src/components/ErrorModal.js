@@ -4,6 +4,7 @@ import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import AuthContext, { AuthContextProvider } from '../auth'
+import { GlobalStoreContext } from '../store'
 import { useContext } from 'react';
 
 const style = {
@@ -20,38 +21,79 @@ const style = {
 };
 
 export default function ErrorModal() {
-  let error;
+  let error="";
+  let title="";
+  let content="";
+  let buttons;
   let show=false;
 
   const { auth } = useContext(AuthContext);
+  const {store} = useContext(GlobalStoreContext);
+
   if(auth.errorToDisplay){
     show = true;
-    error = auth.errorToDisplay;
+    content = auth.errorToDisplay;
+    title="Error";
   }else{
     show=false;
+  }
+  if(store.listMarkedForDeletion){
+    show=true;
+    title="Delete List";
+    content="Are you sure you want to delete the " + store.listMarkedForDeletion + " Top 5 List?";
   }
 
   const handleClose=function(){
     auth.hideError();
   }
+  const handleCloseDelete=function(){
+    store.unmarkListForDeletion();
+  }
+  const handleDelete=function(){
+    store.deleteList();
+  }
+  if(store.listMarkedForDeletion){
+    return (
+      <div >
+        <Modal
+          open={show}
+          id={"error-modal"}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style} >
+            <Typography id="modal-modal-title" variant="h6" component="h2" fontWeight="500px">
+              {title}
+            </Typography>
+            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+              {content}<br></br><br></br>
+              <Button class="close-button-modal" variant="contained" onClick={handleCloseDelete}>Cancel</Button>
+              <Button class="close-button-modal" variant="contained" onClick={handleDelete}>Delete</Button>
+            </Typography>
+          </Box>
+        </Modal>
+      </div>
+    );
+  }
   return (
-     <div >
-       <Modal
-         open={show}
-         id={"error-modal"}
-         aria-labelledby="modal-modal-title"
-         aria-describedby="modal-modal-description"
-       >
-         <Box sx={style} >
-           <Typography id="modal-modal-title" variant="h6" component="h2" fontWeight="500px">
-             Error
-           </Typography>
-           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-             {error}<br></br><br></br>
-             <Button class="close-button-modal" variant="contained" onClick={handleClose}>Close</Button>
-           </Typography>
-         </Box>
-       </Modal>
-     </div>
-   );
+    <div >
+      <Modal
+        open={show}
+        id={"error-modal"}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style} >
+          <Typography id="modal-modal-title" variant="h6" component="h2" fontWeight="500px">
+            {title}
+          </Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            {content}<br></br><br></br>
+            <Button class="close-button-modal" variant="contained" onClick={handleClose}>Close</Button>
+          </Typography>
+        </Box>
+      </Modal>
+    </div>
+  );
+  
 }
