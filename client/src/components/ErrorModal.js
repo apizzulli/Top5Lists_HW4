@@ -3,6 +3,8 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
+import AuthContext from '../auth'
+import { useContext } from 'react';
 
 const style = {
   position: 'absolute',
@@ -16,14 +18,21 @@ const style = {
   p: 4,
 };
 
-export default function BasicModal() {
+export default function ErrorModal() {
+  let error;
+  let show;
+  const { auth } = useContext(AuthContext);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  if(auth.errorToDisplay){
+    error = auth.errorToDisplay;
+    console.log("error: "+error);
+    show = true;
+  }
   return (
-    <div>
-      <Button onClick={handleOpen}>Open modal</Button>
+    <div show={show}>
       <Modal
         open={open}
         onClose={handleClose}
@@ -31,12 +40,12 @@ export default function BasicModal() {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box sx={style} >
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Text in a modal
+            {error}
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Duis mollis, est non commodo luctus, nisi erat porttitor ligula.
+            {auth.errorToDisplay}
           </Typography>
         </Box>
       </Modal>

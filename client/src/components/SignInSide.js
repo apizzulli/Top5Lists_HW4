@@ -35,7 +35,7 @@ const theme = createTheme();
 
 export default function SignInSide() {
   const { auth } = useContext(AuthContext);
-  const { store } = useContext(GlobalStoreContext)
+  const { store } = useContext(GlobalStoreContext);
   
   const handleSubmit = (event) => {
     event.preventDefault();

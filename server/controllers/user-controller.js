@@ -3,6 +3,7 @@ const User = require('../models/user-model')
 const bcrypt = require('bcryptjs')
 
 getLoggedIn = async (req, res) => {
+    console.log("getLoggedIn");
     auth.verify(req, res, async function () {
         const loggedInUser = await User.findOne({ _id: req.userId });
         return res.status(200).json({
@@ -20,11 +21,17 @@ loginUser = async(req,res)=>{
         const{ email, password }=req.body;
         //See if there exists a user in the database with the given email. 
         const existingUser = await User.findOne({email:email}); 
-        const saltRounds = 10;
-        const salt = await bcrypt.genSalt(saltRounds);
-        const passwordHash = await bcrypt.hash(password, salt);
-        if(passwordHash!=existingUser.passwordHash){
-        }
+        bcrypt.compare(password,existingUser.passwordHash, function(err, res) {
+            if(err){
+                console.log("error-server side");
+                return res
+                .status(400)
+                .json({
+                    success: false,
+                    errorMessage: "Incorrect password."
+                })
+            }
+        });
         const token = auth.signToken(existingUser);
         await res.cookie("token", token, {
             httpOnly: true,

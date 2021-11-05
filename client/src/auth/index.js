@@ -15,7 +15,8 @@ export const AuthActionType = {
 function AuthContextProvider(props) {
     const [auth, setAuth] = useState({
         user: null,
-        loggedIn: false
+        loggedIn: false,
+        errorToDisplay: null
     });
     const history = useHistory();
 
@@ -29,19 +30,29 @@ function AuthContextProvider(props) {
             case AuthActionType.LOGIN_USER:{
                 return setAuth({
                     user: payload.user,
-                    loggedIn: true
+                    loggedIn: true,
+                    errorToDisplay: null
+                })
+            }
+            case AuthActionType.LOGOUT_USER:{
+                return setAuth({
+                    user: null,
+                    loggedIn:false,
+                    errorToDisplay:null
                 })
             }
             case AuthActionType.GET_LOGGED_IN: {
                 return setAuth({
                     user: payload.user,
-                    loggedIn: payload.loggedIn
+                    loggedIn: payload.loggedIn,
+                    errorToDisplay: null
                 });
             }
             case AuthActionType.REGISTER_USER: {
                 return setAuth({
                     user: payload.user,
-                    loggedIn: true
+                    loggedIn: true,
+                    errorToDisplay: null
                 })
             }
             default:
@@ -86,8 +97,23 @@ function AuthContextProvider(props) {
             })
             history.push("/");
             store.loadIdNamePairs();
+        }else{
+            console.log("error");
+            if(response.status==400){
+                auth.errorToDisplay=response;
+            }
         }
     }
+    auth.logoutUser = function(){
+        authReducer({
+            type: AuthActionType.LOGOUT_USER,
+            payload:{
+                loggedIn:false
+            }
+        })
+        history.push('/');
+    }
+    
 
     return (
         <AuthContext.Provider value={{

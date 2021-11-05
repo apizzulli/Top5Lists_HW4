@@ -3,6 +3,7 @@ import EditToolbar from './EditToolbar'
 import HomeScreen from './HomeScreen'
 import HomeWrapper from './HomeWrapper'
 import ListCard from './ListCard'
+import ErrorModal from './ErrorModal'
 import RegisterScreen from './RegisterScreen'
 import SplashScreen from './SplashScreen'
 import Statusbar from './Statusbar'
@@ -18,6 +19,7 @@ import SignInSide from './SignInSide'
 export { 
     AppBanner, 
     EditToolbar, 
+    ErrorModal,
     HomeScreen,
     HomeWrapper,
     ListCard, 
