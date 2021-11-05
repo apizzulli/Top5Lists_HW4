@@ -5,39 +5,44 @@ const bcrypt = require('bcryptjs')
 getLoggedIn = async (req, res) => {
     auth.verify(req, res, async function () {
         const loggedInUser = await User.findOne({ _id: req.userId });
-        if(loggedInUser){
-            return res.status(200).json({
-                loggedIn: true,
-                user: {
-                    firstName: loggedInUser.firstName,
-                    lastName: loggedInUser.lastName,
-                    email: loggedInUser.email
-                }
-            }).send();
-        }
-        else
-            console.log("user not found"); 
+        return res.status(200).json({
+            loggedIn: true,
+            user: {
+                firstName: loggedInUser.firstName,
+                lastName: loggedInUser.lastName,
+                email: loggedInUser.email
+            }
+        }).send();
     })
 }
-loginUser = async(req,res)=>{
-    console.log("loginUser in user-controller.js");
-    console.log("req body: "+req.body);
-    try {
-        const {email,password} = req.body;
-        console.log("email: "+email);
-        console.log("password: "+password);
-        if(!email ||!password){
-            return res
-            .status(400)
-            .json({errorMessage: "Please enter all required fields."});
+loginUser = async(req,res)=>{ 
+    try{
+        console.log("hi from server");
+        const{ email, password }=req.body;
+        //See if there exists a user in the database with the given email. 
+        const existingUser = await User.findOne({email:email}); 
+        const saltRounds = 10;
+        const salt = await bcrypt.genSalt(saltRounds);
+        const passwordHash = await bcrypt.hash(password, salt);
+        if(passwordHash!=existingUser.passwordHash){
         }
-        const existingUser = User.findOne({email: email});
-        if(!existingUser)
-            console.log("No such user exists.")
-        else
-            console.log(existingUser.email);
+        const token = auth.signToken(existingUser);
+        console.log("logged in");
+        await res.cookie("token", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "none"
+        }).status(200).json({
+            success: true,
+            user: {
+                firstName: existingUser.firstName,
+                lastName: existingUser.lastName,
+                email: existingUser.email
+            }
+        }).send();
+        
     }catch(err){
-        console.log(err);
+        console.log("error: "+err);
     }
 }
 registerUser = async (req, res) => {
@@ -104,6 +109,6 @@ registerUser = async (req, res) => {
 
 module.exports = {
     getLoggedIn,
-    registerUser,
+    registerUser, 
     loginUser
 }

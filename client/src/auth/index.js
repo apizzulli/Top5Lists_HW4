@@ -76,7 +76,6 @@ function AuthContextProvider(props) {
     }
     auth.loginUser = async function(userData, store){
         const response = await api.loginUser(userData);
-        console.log("made it back to client");
         if(response.status==200){
             authReducer({
                 type: AuthActionType.LOGIN_USER,
@@ -84,9 +83,9 @@ function AuthContextProvider(props) {
                     user: response.data.user
                 }
             })
-        }
-        else{
-            console.log("error");
+            history.push("/");
+
+            store.loadIdNamePairs();
         }
     }
 

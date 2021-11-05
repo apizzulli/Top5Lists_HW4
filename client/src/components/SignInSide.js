@@ -40,7 +40,6 @@ export default function SignInSide() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
-    console.log(formData);
     auth.loginUser({
       email: formData.get('email'),
       password: formData.get('password')  
