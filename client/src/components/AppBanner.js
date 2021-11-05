@@ -73,12 +73,29 @@ export default function AppBanner() {
         </Menu>        
 
     let editToolbar = "";
+    let icon="";
     let menu = loggedOutMenu;
     if (auth.loggedIn) {
         menu = loggedInMenu;
+        let firstName = auth.user.firstName;
+        let lastName=auth.user.lastName;
+        let initials=""+firstName.charAt(0)+lastName.charAt(0);
+        icon = <div class="icon-initials" onClick={handleProfileMenuOpen}>{initials}</div>;
         if (store.currentList) {
             editToolbar = <EditToolbar />;
         }
+    }else{
+        icon=<IconButton
+        size="large"
+        edge="end"
+        aria-label="account of current user"
+        aria-controls={menuId}
+        aria-haspopup="true"
+        onClick={handleProfileMenuOpen}
+        color="inherit"
+    >
+        { getAccountMenu(auth.loggedIn) }
+    </IconButton>;
     }
     
     function getAccountMenu(loggedIn) {
@@ -99,17 +116,7 @@ export default function AppBanner() {
                     </Typography>
                     <Box sx={{ flexGrow: 1 }}>{editToolbar}</Box>
                     <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
-                        <IconButton
-                            size="large"
-                            edge="end"
-                            aria-label="account of current user"
-                            aria-controls={menuId}
-                            aria-haspopup="true"
-                            onClick={handleProfileMenuOpen}
-                            color="inherit"
-                        >
-                            { getAccountMenu(auth.loggedIn) }
-                        </IconButton>
+                        {icon}
                     </Box>
                 </Toolbar>
             </AppBar>

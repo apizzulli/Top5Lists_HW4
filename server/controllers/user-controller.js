@@ -46,6 +46,7 @@ loginUser = async(req,res)=>{
             }
         });
     }catch(err){
+        console.log("error: "+err);
     }
 }
 logoutUser=async(req,res)=>{
