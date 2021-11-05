@@ -44,7 +44,7 @@ export default function SignInSide() {
       email: formData.get('email'),
       password: formData.get('password')  
     }, store);
-    console.log("LOGGEDIN: "+auth.loggedIn);
+    console.log("auth.errorToDisplay: "+auth.errorToDisplay);
   };
 
   return (

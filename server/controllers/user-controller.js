@@ -21,8 +21,8 @@ loginUser = async(req,res)=>{
         const{ email, password }=req.body;
         //See if there exists a user in the database with the given email. 
         const existingUser = await User.findOne({email:email}); 
-        bcrypt.compare(password,existingUser.passwordHash, function(err, res) {
-            if(err){
+        bcrypt.compare(password,existingUser.passwordHash, async function(err, response) {
+            if(!response){
                 console.log("error-server side");
                 return res
                 .status(400)
@@ -30,25 +30,36 @@ loginUser = async(req,res)=>{
                     success: false,
                     errorMessage: "Incorrect password."
                 })
+            }else{
+                const token = auth.signToken(existingUser);
+                await res.cookie("token", token, {
+                    httpOnly: true,
+                    secure: true,
+                    sameSite: "none"
+                }).status(200).json({
+                    success: true,
+                    user: {
+                        firstName: existingUser.firstName,
+                        lastName: existingUser.lastName,
+                        email: existingUser.email
+                    }
+                }).send();
             }
         });
-        const token = auth.signToken(existingUser);
-        await res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "none"
-        }).status(200).json({
-            success: true,
-            user: {
-                firstName: existingUser.firstName,
-                lastName: existingUser.lastName,
-                email: existingUser.email
-            }
-        }).send();
-        
     }catch(err){
         console.log("error: "+err);
     }
+}
+logoutUser=async(req,res)=>{
+    await res.cookie("token", 'none',{
+        expires: new Date(Date.now()-5*1000),
+        httpOnly: true,
+        secure:true,
+        sameSite: "none"
+    }).status(200).json({
+        success: true,
+        message: "Successfully logged out."
+    }).send();
 }
 registerUser = async (req, res) => {
     try {
@@ -115,5 +126,6 @@ registerUser = async (req, res) => {
 module.exports = {
     getLoggedIn,
     registerUser, 
-    loginUser
+    loginUser,
+    logoutUser
 }

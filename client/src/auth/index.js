@@ -8,6 +8,7 @@ console.log("create AuthContext: " + AuthContext);
 // THESE ARE ALL THE TYPES OF UPDATES TO OUR AUTH STATE THAT CAN BE PROCESSED
 export const AuthActionType = {
     LOGIN_USER: "LOGIN_USER",
+    LOGOUT_USER: "LOGOUT_USER",
     GET_LOGGED_IN: "GET_LOGGED_IN",
     REGISTER_USER: "REGISTER_USER"
 }
@@ -86,31 +87,39 @@ function AuthContextProvider(props) {
         }
     }
     auth.loginUser = async function(userData, store){
-        const response = await api.loginUser(userData);
-        if(response.status==200){
-            console.log("succeeded in calling api.loginUser");
-            authReducer({
-                type: AuthActionType.LOGIN_USER,
-                payload: {
-                    user: response.data.user
-                }
-            })
-            history.push("/");
-            store.loadIdNamePairs();
-        }else{
-            console.log("error");
-            if(response.status==400){
-                auth.errorToDisplay=response;
+        try{
+            const response = await api.loginUser(userData);
+            if(response.status==200){
+                console.log("succeeded in calling api.loginUser");
+                authReducer({
+                    type: AuthActionType.LOGIN_USER,
+                    payload: {
+                        user: response.data.user
+                    }
+                })
+                history.push("/");
+                store.loadIdNamePairs();
             }
+        }catch(err){
+            auth.errorToDisplay=err.response.data.errorMessage;
+            console.log("auth.errorToDisplay: "+auth.errorToDisplay);
+            /*if(response.status==400){
+                auth.errorToDisplay=response;
+            }*/
         }
     }
-    auth.logoutUser = function(){
-        authReducer({
-            type: AuthActionType.LOGOUT_USER,
-            payload:{
-                loggedIn:false
-            }
-        })
+    auth.logoutUser = async function(){
+        const resp = await api.logoutUser();
+        if(resp.status==200){
+            console.log("logged out");
+            authReducer({
+                type: AuthActionType.LOGOUT_USER,
+                payload: {
+                    user: null,
+                    loggedIn:false
+                }
+            })
+        }
         history.push('/');
     }
     
