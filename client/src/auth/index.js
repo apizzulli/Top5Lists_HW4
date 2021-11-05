@@ -11,7 +11,8 @@ export const AuthActionType = {
     LOGOUT_USER: "LOGOUT_USER",
     GET_LOGGED_IN: "GET_LOGGED_IN",
     REGISTER_USER: "REGISTER_USER",
-    DISPLAY_ERROR: "DISPLAY_ERROR"
+    DISPLAY_ERROR: "DISPLAY_ERROR",
+    HIDE_ERROR: "DISPLAY_ERROR"
 }
 
 function AuthContextProvider(props) {
@@ -58,6 +59,13 @@ function AuthContextProvider(props) {
                 })
             }
             case AuthActionType.DISPLAY_ERROR:{
+                return setAuth({
+                    user: null,
+                    loggedIn: false,
+                    errorToDisplay: payload.errorToDisplay
+                })
+            }
+            case AuthActionType.HIDE_ERROR:{
                 return setAuth({
                     user: null,
                     loggedIn: false,
@@ -121,6 +129,14 @@ function AuthContextProvider(props) {
             type: AuthActionType.DISPLAY_ERROR,
             payload:{
                 errorToDisplay: message
+            }
+        })
+    }
+    auth.hideError=function(){
+        authReducer({
+            type: AuthActionType.HIDE_ERROR,
+            payload:{
+                errorToDisplay: ""
             }
         })
     }

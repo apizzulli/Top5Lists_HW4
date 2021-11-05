@@ -15,6 +15,7 @@ const style = {
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
+  fontWeight: "10000px",
   p: 4,
 };
 
@@ -23,29 +24,32 @@ export default function ErrorModal() {
   let show=false;
 
   const { auth } = useContext(AuthContext);
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
   if(auth.errorToDisplay){
     show = true;
     error = auth.errorToDisplay;
     console.log("error: "+auth.errorToDisplay);
+  }else{
+    show=false;
+  }
+
+  const handleClose=function(){
+    auth.hideError();
   }
   return (
      <div >
        <Modal
          open={show}
-         onBlur={handleClose}
          id={"error-modal"}
          aria-labelledby="modal-modal-title"
          aria-describedby="modal-modal-description"
        >
          <Box sx={style} >
-           <Typography id="modal-modal-title" variant="h6" component="h2">
+           <Typography id="modal-modal-title" variant="h6" component="h2" fontWeight="500px">
              Error
            </Typography>
            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-             {error}
+             {error}<br></br><br></br>
+             <Button class="close-button-modal" variant="contained" onClick={handleClose}>Close</Button>
            </Typography>
          </Box>
        </Modal>
