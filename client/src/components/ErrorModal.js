@@ -40,7 +40,7 @@ export default function ErrorModal() {
   if(store.listMarkedForDeletion){
     show=true;
     title="Delete List";
-    content="Are you sure you want to delete the " + store.listMarkedForDeletion + " Top 5 List?";
+    content="Are you sure you want to delete the " + store.listMarkedForDeletion.name + " Top 5 List?";
   }
 
   const handleClose=function(){
@@ -50,7 +50,7 @@ export default function ErrorModal() {
     store.unmarkListForDeletion();
   }
   const handleDelete=function(){
-    store.deleteList();
+    store.deleteList(store.listMarkedForDeletion);
   }
   if(store.listMarkedForDeletion){
     return (
