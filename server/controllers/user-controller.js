@@ -56,10 +56,10 @@ logoutUser=async(req,res)=>{
         httpOnly: true,
         secure:true,
         sameSite: "none"
-    }).status(200).json({
+    });return res.status(200).json({
         success: true,
         message: "Successfully logged out."
-    }).send();
+    });
 }
 registerUser = async (req, res) => {
     try {

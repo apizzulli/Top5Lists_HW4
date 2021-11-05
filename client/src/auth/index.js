@@ -10,14 +10,15 @@ export const AuthActionType = {
     LOGIN_USER: "LOGIN_USER",
     LOGOUT_USER: "LOGOUT_USER",
     GET_LOGGED_IN: "GET_LOGGED_IN",
-    REGISTER_USER: "REGISTER_USER"
+    REGISTER_USER: "REGISTER_USER",
+    DISPLAY_ERROR: "DISPLAY_ERROR"
 }
 
 function AuthContextProvider(props) {
     const [auth, setAuth] = useState({
         user: null,
         loggedIn: false,
-        errorToDisplay: null
+        errorToDisplay: ""
     });
     const history = useHistory();
 
@@ -32,28 +33,35 @@ function AuthContextProvider(props) {
                 return setAuth({
                     user: payload.user,
                     loggedIn: true,
-                    errorToDisplay: null
+                    errorToDisplay: ""
                 })
             }
             case AuthActionType.LOGOUT_USER:{
                 return setAuth({
                     user: null,
                     loggedIn:false,
-                    errorToDisplay:null
+                    errorToDisplay:""
                 })
             }
             case AuthActionType.GET_LOGGED_IN: {
                 return setAuth({
                     user: payload.user,
                     loggedIn: payload.loggedIn,
-                    errorToDisplay: null
+                    errorToDisplay: ""
                 });
             }
             case AuthActionType.REGISTER_USER: {
                 return setAuth({
                     user: payload.user,
                     loggedIn: true,
-                    errorToDisplay: null
+                    errorToDisplay: ""
+                })
+            }
+            case AuthActionType.DISPLAY_ERROR:{
+                return setAuth({
+                    user: null,
+                    loggedIn: false,
+                    errorToDisplay: payload.errorToDisplay
                 })
             }
             default:
@@ -101,12 +109,20 @@ function AuthContextProvider(props) {
                 store.loadIdNamePairs();
             }
         }catch(err){
-            auth.errorToDisplay=err.response.data.errorMessage;
-            console.log("auth.errorToDisplay: "+auth.errorToDisplay);
+            auth.displayError(err.response.data.errorMessage);
+            //auth.errorToDisplay=err.response.data.errorMessage;
             /*if(response.status==400){
                 auth.errorToDisplay=response;
             }*/
         }
+    }
+    auth.displayError=function(message){
+        authReducer({
+            type: AuthActionType.DISPLAY_ERROR,
+            payload:{
+                errorToDisplay: message
+            }
+        })
     }
     auth.logoutUser = async function(){
         const resp = await api.logoutUser();
@@ -119,8 +135,8 @@ function AuthContextProvider(props) {
                     loggedIn:false
                 }
             })
+            history.push('/');
         }
-        history.push('/');
     }
     
 

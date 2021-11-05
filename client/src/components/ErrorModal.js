@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-import AuthContext from '../auth'
+import AuthContext, { AuthContextProvider } from '../auth'
 import { useContext } from 'react';
 
 const style = {
@@ -20,7 +20,6 @@ const style = {
 
 export default function ErrorModal() {
   let error;
-  let show;
   const { auth } = useContext(AuthContext);
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
@@ -28,12 +27,12 @@ export default function ErrorModal() {
 
   if(auth.errorToDisplay){
     error = auth.errorToDisplay;
-    console.log("error: "+error);
-    show = true;
+    console.log("error: "+auth.errorToDisplay);
   }
   return (
-    <div show={show}>
-      <Modal
+    <div>
+      <Modal 
+      display={true}
         open={open}
         onClose={handleClose}
         id={"error-modal"}
@@ -45,7 +44,7 @@ export default function ErrorModal() {
             {error}
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            {auth.errorToDisplay}
+            {error}
           </Typography>
         </Box>
       </Modal>

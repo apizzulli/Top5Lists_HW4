@@ -16,7 +16,7 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
+import ErrorModal from './ErrorModal';
 
 function Copyright(props) {
   return (
@@ -44,11 +44,11 @@ export default function SignInSide() {
       email: formData.get('email'),
       password: formData.get('password')  
     }, store);
-    console.log("auth.errorToDisplay: "+auth.errorToDisplay);
   };
 
   return (
     <Container component="main" maxWidth="fullx" >
+      <ErrorModal/>
       <ThemeProvider theme={theme}>
         <Grid container component="main" sx={{ height: '80vh' }}>
           <CssBaseline />
