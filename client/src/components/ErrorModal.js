@@ -52,6 +52,7 @@ export default function ErrorModal() {
   const handleDelete=function(){
     store.deleteList(store.listMarkedForDeletion);
   }
+  
   if(store.listMarkedForDeletion){
     return (
       <div >

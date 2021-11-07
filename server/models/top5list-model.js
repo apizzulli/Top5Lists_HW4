@@ -1,10 +1,11 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
-
+const User = require('../models/user-model')
 const Top5ListSchema = new Schema(
     {
         name: { type: String, required: true },
-        items: { type: [String], required: true }
+        items: { type: [String], required: true },
+        ownerEmail:{type: String, required: true}
     },
     { timestamps: true },
 )

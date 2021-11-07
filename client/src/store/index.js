@@ -19,6 +19,7 @@ export const GlobalStoreContext = createContext({});
 // DATA STORE STATE THAT CAN BE PROCESSED
 export const GlobalStoreActionType = {
     CHANGE_LIST_NAME: "CHANGE_LIST_NAME",
+    CHANGE_LIST_ITEM: "CHANGE_LIST_ITEM",
     CLOSE_CURRENT_LIST: "CLOSE_CURRENT_LIST",
     CREATE_NEW_LIST: "CREATE_NEW_LIST",
     LOAD_ID_NAME_PAIRS: "LOAD_ID_NAME_PAIRS",
@@ -64,6 +65,16 @@ function GlobalStoreContextProvider(props) {
                     isItemEditActive: false,
                     listMarkedForDeletion: null
                 });
+            }
+            case GlobalStoreActionType.CHANGE_LIST_ITEM:{
+                return setStore({
+                    idNamePairs: payload.idNamePairs,
+                    currentList: payload.top5List,
+                    newListCounter: store.newListCouinter,
+                    isListNameEditActive: false,
+                    isItemEditActive: false,
+                    listMarkedForDeletion: null
+                })
             }
             // STOP EDITING THE CURRENT LIST
             case GlobalStoreActionType.CLOSE_CURRENT_LIST: {
@@ -227,7 +238,32 @@ function GlobalStoreContextProvider(props) {
             console.log("API FAILED TO CREATE A NEW LIST");
         }
     }
-
+    store.changeListItem = function (id, newText){
+        let top5List = store.currentList;
+        let index = parseInt(id.charAt(id.length-1));
+        top5List.items[index-1] = newText;
+        console.log(top5List.items[index-1]);
+        async function updateList (top5List){
+            let response = await api.updateTop5ListById(top5List._id, top5List);
+            if(response.data.success){
+                async function getListPairs(top5List) {
+                    response = await api.getTop5ListPairs();
+                    if (response.data.success) {
+                        let pairsArray = response.data.idNamePairs;
+                        storeReducer({
+                            type: GlobalStoreActionType.CHANGE_LIST_ITEM,
+                            payload: {
+                                idNamePairs: pairsArray,
+                                top5List: top5List
+                            }
+                        });
+                    }
+                }
+                getListPairs(top5List);
+            }
+        }
+        updateList(top5List);
+    }
     // THIS FUNCTION LOADS ALL THE ID, NAME PAIRS SO WE CAN LIST ALL THE LISTS
     store.loadIdNamePairs = async function () {
         const response = await api.getTop5ListPairs();
@@ -258,6 +294,7 @@ function GlobalStoreContextProvider(props) {
             });
         }
     }
+
 
     store.deleteList = async function (listToDelete) {
         let response = await api.deleteTop5ListById(listToDelete._id);

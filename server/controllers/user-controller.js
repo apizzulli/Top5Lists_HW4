@@ -22,7 +22,6 @@ loginUser = async(req,res)=>{
         const existingUser = await User.findOne({email:email}); 
         bcrypt.compare(password,existingUser.passwordHash, async function(err, response) {
             if(!response){
-                console.log("error-server side");
                 return res
                 .status(400)
                 .json({
