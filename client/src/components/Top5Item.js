@@ -58,6 +58,7 @@ function Top5Item(props) {
             store.changeListItem(itemId,text);
             toggleEdit();
         }
+        store.addUpdateListItemTransaction(event.target.id,props.text,text);
     }
     function handleUpdateText(event){
         event.preventDefault();

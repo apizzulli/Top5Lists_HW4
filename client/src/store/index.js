@@ -63,17 +63,21 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    undoStackSize: tps.getUndoSize(),
+                    redoStackSize: tps.getRedoSize()
                 });
             }
             case GlobalStoreActionType.CHANGE_LIST_ITEM:{
                 return setStore({
                     idNamePairs: payload.idNamePairs,
                     currentList: payload.top5List,
-                    newListCounter: store.newListCouinter,
+                    newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    undoStackSize: tps.getUndoSize(),
+                    redoStackSize: tps.getRedoSize()
                 })
             }
             // STOP EDITING THE CURRENT LIST
@@ -84,18 +88,22 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    undoStackSize: tps.getUndoSize(),
+                    redoStackSize: tps.getRedoSize()
                 })
             }
             // CREATE A NEW LIST
             case GlobalStoreActionType.CREATE_NEW_LIST: {
                 return setStore({
                     idNamePairs: store.idNamePairs,
-                    currentList: payload,
-                    newListCounter: store.newListCounter + 1,
+                    currentList: payload.currentList,
+                    newListCounter: payload.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    undoStackSize: tps.getUndoSize(),
+                    redoStackSize: tps.getRedoSize()
                 })
             }
             // GET ALL THE LISTS SO WE CAN PRESENT THEM
@@ -106,7 +114,9 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    undoStackSize: tps.getUndoSize(),
+                    redoStackSize: tps.getRedoSize()
                 });
             }
             // PREPARE TO DELETE A LIST
@@ -128,7 +138,9 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    undoStackSize: tps.getUndoSize(),
+                    redoStackSize: tps.getRedoSize()
                 });
             }
             // UPDATE A LIST
@@ -139,7 +151,9 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: false,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    undoStackSize: tps.getUndoSize(),
+                    redoStackSize: tps.getRedoSize()
                 });
             }
             // START EDITING A LIST ITEM
@@ -150,7 +164,9 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter,
                     isListNameEditActive: false,
                     isItemEditActive: true,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    undoStackSize: tps.getUndoSize(),
+                    redoStackSize: tps.getRedoSize()
                 });
             }
             // START EDITING A LIST NAME
@@ -161,7 +177,9 @@ function GlobalStoreContextProvider(props) {
                     newListCounter: store.newListCounter,
                     isListNameEditActive: true,
                     isItemEditActive: false,
-                    listMarkedForDeletion: null
+                    listMarkedForDeletion: null,
+                    undoStackSize: tps.getUndoSize(),
+                    redoStackSize: tps.getRedoSize()
                 });
             }
             default:
@@ -175,7 +193,10 @@ function GlobalStoreContextProvider(props) {
 
     // THIS FUNCTION PROCESSES CHANGING A LIST NAME
     store.changeListName = async function (id, newName) {
-        let response = await api.getTop5ListById(id);
+        let payload={
+            userEmail: auth.user.userEmail
+        };
+        let response = await api.getTop5ListById(id,payload);
         if (response.data.success) {
             let top5List = response.data.top5List;
             top5List.name = newName;
@@ -223,11 +244,16 @@ function GlobalStoreContextProvider(props) {
         };
         const response = await api.createTop5List(payload);
         if (response.data.success) {
+            let newCounter = store.newListCounter;
+            newCounter++;
             tps.clearAllTransactions();
             let newList = response.data.top5List;
             storeReducer({
                 type: GlobalStoreActionType.CREATE_NEW_LIST,
-                payload: newList
+                payload:{
+                    currentList: newList,
+                    newListCounter: newCounter
+                }
             }
             );
 
@@ -385,8 +411,18 @@ function GlobalStoreContextProvider(props) {
     store.showErrorModal = function(){
         document.getElementById("error-modal").classList.add("is-visible");
     }
+    store.addMoveItemTransaction = function (start, end) {
+        let transaction = new MoveItem_Transaction(store, start, end);
+        tps.addTransaction(transaction);
+    }
+    store.addUpdateListItemTransaction= function(id, oldText, newText){
+        let transaction = new UpdateItem_Transaction(store,id,oldText,newText);
+        tps.addTransaction(transaction);
+    }
+    
     store.undo = function () {
         tps.undoTransaction();
+        
     }
 
     store.redo = function () {
