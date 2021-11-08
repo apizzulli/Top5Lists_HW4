@@ -68,6 +68,11 @@ body {
   text-align: center;
   vertical-align: center;
 }
+#sign-in-side{
+  width: auto;
+  padding-left: 0%;
+  padding-right: 0%;
+}
 
 #edit-toolbar {
   background-color: transparent;

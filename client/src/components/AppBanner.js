@@ -79,7 +79,7 @@ export default function AppBanner() {
         menu = loggedInMenu;
         let firstName = auth.user.firstName;
         let lastName=auth.user.lastName;
-        let initials=""+firstName.charAt(0)+lastName.charAt(0);
+        let initials=""+firstName.charAt(0).toUpperCase() +lastName.charAt(0).toUpperCase();
         icon = <div class="icon-initials" onClick={handleProfileMenuOpen}>{initials}</div>;
         if (store.currentList) {
             editToolbar = <EditToolbar />;

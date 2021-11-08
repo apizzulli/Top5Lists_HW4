@@ -47,7 +47,7 @@ export default function SignInSide() {
   };
 
   return (
-    <Container component="main" maxWidth="fullx" >
+    <Container component="main" id = "sign-in-side" maxWidth="fullx" >
       <ErrorModal/>
       <ThemeProvider theme={theme}>
         <Grid container component="main" sx={{ height: '80vh' }}>
@@ -58,8 +58,9 @@ export default function SignInSide() {
             sm={4}
             md={7}
             sx={{
-              paddingLeft: '0px',
-              paddingRight: '0px',
+
+              paddingLeft: '100px',
+              paddingRight: '100px',
               backgroundImage: 'url(https://source.unsplash.com/random)',
               backgroundRepeat: 'no-repeat',
               backgroundColor: (t) =>

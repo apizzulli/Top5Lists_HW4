@@ -50,10 +50,9 @@ updateTop5List = async (req, res) => {
             const loggedInUser = await User.findOne({ _id: req.userId });
             console.log("user email in updateTop5List: " +loggedInUser.email);
             if(loggedInUser.email!=top5List.ownerEmail){
-                console.log("unauthorized!");
                 return res.status(401).json({
                     success: false,
-                    error: 'Not authorized to edit this list.'
+                    errorMessage: 'Not authorized to edit this list.'
                 });
             }
         })

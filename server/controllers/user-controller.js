@@ -20,6 +20,9 @@ loginUser = async(req,res)=>{
         const{ email, password }=req.body;
         //See if there exists a user in the database with the given email. 
         const existingUser = await User.findOne({email:email}); 
+        if(!existingUser){
+            return res.status(400).json({success:false, errorMessage: "No user exists with the given email."});
+        }
         bcrypt.compare(password,existingUser.passwordHash, async function(err, response) {
             if(!response){
                 return res
