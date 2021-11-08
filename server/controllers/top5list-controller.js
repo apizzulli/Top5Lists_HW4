@@ -95,6 +95,12 @@ deleteTop5List = async (req, res) => {
                 message: 'Top 5 List not found!',
             })
         }
+        auth.verify(req, res, async function () {
+            const loggedInUser = User.findOne({_id: req.userId});
+            if(loggedInUser.email!=top5List.ownerEmail)
+                return res.status(401).json({success: false, error: "Not authorized to delete this list."});
+        })
+        
         Top5List.findOneAndDelete({ _id: req.params.id }, () => {
             return res.status(200).json({ success: true, data: top5List })
         }).catch(err => console.log(err))
@@ -105,7 +111,6 @@ getTop5ListById = async (req, res) => {
     await Top5List.findById({ _id: req.params.id }, (err, list) => {
         auth.verify(req, res, async function () {
             const loggedInUser = await User.findOne({ _id: req.userId });
-            console.log("user email in updateTop5List: " +loggedInUser.email);
             if(loggedInUser.email!=list.ownerEmail){
                 return res.status(401).json({
                     success: false,

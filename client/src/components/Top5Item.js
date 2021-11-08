@@ -54,11 +54,11 @@ function Top5Item(props) {
     }
     function handleChangeItem(event){
         if(event.code=='Enter'){
-            let itemId=event.target.id;
-            store.changeListItem(itemId,text);
+            let index = parseInt(event.target.id.charAt((event.target.id.length)-1)-1);
+            store.addUpdateListItemTransaction(index,props.text,text);
+            store.changeListItem(event.target.id,text);
             toggleEdit();
         }
-        store.addUpdateListItemTransaction(event.target.id,props.text,text);
     }
     function handleUpdateText(event){
         event.preventDefault();
